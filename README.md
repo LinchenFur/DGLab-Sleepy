@@ -19,6 +19,8 @@ short_description: Sleepy Project 5.2 with DG-Lab integration
 [**功能**](#功能) / [**演示**](#preview) / [**部署**](#部署--更新) / [**服务端配置**](#服务器配置) / [**使用**](#使用) / [**Client**](#client) / [**API**](#api) / [**关于**](#关于)
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sleepy-project/sleepy)
+[![一键复制到 Hugging Face](https://img.shields.io/badge/一键复制到-Hugging%20Face-yellow?logo=huggingface)](https://huggingface.co/spaces/wyf9/sleepy?duplicate=true&visibility=public)
+[![GitHub Actions 自动部署](https://img.shields.io/badge/GitHub%20Actions-自动部署-blue?logo=githubactions)](https://github.com/LinchenFur/DGLab-Sleepy/actions/workflows/deploy-huggingface.yml)
 
 ## 功能
 
@@ -31,6 +33,25 @@ short_description: Sleepy Project 5.2 with DG-Lab integration
 
 > [!TIP]
 > 如有 Bug / 建议, 可发 issue (**[Bug][link-issue-bug]** / **[Feature][link-issue-feature]**) 或选择下面的联系方式 *(注明来意)*.
+
+
+## 一键部署到 Hugging Face
+
+### 第一步：点击按钮复制 Space
+
+[![一键复制到 Hugging Face](https://img.shields.io/badge/点击这里一键部署-Hugging%20Face-yellow?logo=huggingface)](https://huggingface.co/spaces/wyf9/sleepy?duplicate=true&visibility=public)
+
+这个按钮会打开 Hugging Face 的 `Duplicate this Space` 页面。请将 Space 名称设置为：
+
+```text
+linruisama/dglab-sleepy
+```
+
+### 第二步：同步本项目代码
+
+[![运行自动部署](https://img.shields.io/badge/运行自动部署-GitHub%20Actions-blue?logo=githubactions)](https://github.com/LinchenFur/DGLab-Sleepy/actions/workflows/deploy-huggingface.yml)
+
+在 GitHub Actions 中点击 `Run workflow`。首次使用前，需要在 GitHub 仓库配置 `HF_TOKEN` Secret 和 `HF_SPACE` 变量，之后每次推送 `main` 都会自动同步。
 
 ## 文档（Beta）
 

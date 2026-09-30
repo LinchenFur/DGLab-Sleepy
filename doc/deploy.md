@@ -82,16 +82,27 @@ python3 start.py
 > ~~唯一的缺点: 不能使用自定义域名~~ <br/>
 > **可用 Cloudflared Tunnel 方式使用自定义域名，见 [如何使用自定义域名](#如何使用自定义域名)**
 
-只需三步:
+### 一键复制基础 Space
 
-1. 复制 Space `wyf9/sleepy` (**[点击直达](https://huggingface.co/spaces/wyf9/sleepy?duplicate=true&visibility=public)**)
+[![点击这里一键部署到 Hugging Face](https://img.shields.io/badge/点击这里一键部署-Hugging%20Face-yellow?logo=huggingface)](https://huggingface.co/spaces/wyf9/sleepy?duplicate=true&visibility=public)
 
-> 如果没有弹出窗口, 请手动点击右上角三点 -> `Duplicate this Space` (如图)
+这个按钮会打开原作者的 Docker Space 复制页面。请把复制后的 Space 名称设置为：
+
+```text
+linruisama/dglab-sleepy
+```
+
+> 如果没有弹出窗口，请手动点击右上角三点 -> `Duplicate this Space`。
+
+### 同步 DGLab-Sleepy 最新代码
+
+复制完成后，在 GitHub 仓库的 Actions 页面运行：
+
+[![运行自动部署](https://img.shields.io/badge/运行自动部署-GitHub%20Actions-blue?logo=githubactions)](https://github.com/LinchenFur/DGLab-Sleepy/actions/workflows/deploy-huggingface.yml)
+
+在 `Run workflow` 前，需要配置 `HF_TOKEN` Secret 和 `HF_SPACE=linruisama/dglab-sleepy` Repository variable。配置完成后，后续推送 `main` 分支会自动同步。
 
 ![huggingface-5](https://ghimg.siiway.top/sleepy/deploy/huggingface-5.1.png)
-
-1. 在复制页面设置 secret 和页面信息等环境变量 **([配置说明](./config.md))**
-2. 点击部署，等待完成后点击右上角三点 -> `Embed this space`，即可获得你的部署地址 *(类似于: <https://wyf9-sleepy.hf.space>)*
 
 > [!IMPORTANT]
 > **在创建时请务必选择 Space 类型为公开 (`Public`)，否则无法获取部署地址 (他人无法访问)!** <br/>
