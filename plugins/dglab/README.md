@@ -52,6 +52,8 @@ secret_key = ""
 
 如未设置 `[plugin.dglab]`，插件会尝试读取旧版 `DGLab.json`，因此旧配置可以直接迁移。
 
+在 Hugging Face、Docker 等容器环境中，也可以使用 Secret `DGLAB_API_URL` 覆盖控制端地址。
+
 ## 安全提示
 
 DG-Lab 会实际控制硬件。请把强度设在自己确认安全的范围内，并建议开启 Turnstile、反向代理访问控制或设置 `public_trigger = false`。关闭公开触发后，请通过 Sleepy 密钥调用接口。

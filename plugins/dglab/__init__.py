@@ -8,6 +8,7 @@ legacy endpoints while adding namespaced v5 endpoints.
 from __future__ import annotations
 
 import json
+import os
 import random
 import threading
 import time
@@ -109,6 +110,11 @@ if not pl.PluginInit.instance.c.plugin.get("dglab", {}):
         plugin.config = DGLabConfig.model_validate(legacy)
 
 config: DGLabConfig = plugin.config
+
+# Cloud/container deployments can override the local DGLab.json endpoint with
+# a secret environment variable without committing a private tunnel URL.
+if os.getenv("DGLAB_API_URL"):
+    config.api_url = os.environ["DGLAB_API_URL"].strip()
 
 _rate_lock = threading.Lock()
 _rate_buckets: defaultdict[str, deque[float]] = defaultdict(deque)

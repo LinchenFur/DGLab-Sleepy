@@ -1,3 +1,15 @@
+---
+title: DGLab Sleepy
+emoji: ⚡
+colorFrom: purple
+colorTo: pink
+sdk: docker
+app_port: 9010
+pinned: false
+license: mit
+short_description: Sleepy Project 5.2 with DG-Lab integration
+---
+
 # DGLab-Sleepy 5.2
 
 > 基于 Sleepy Project 5.2，并通过新版插件系统集成 DG-Lab / 郊狼功能。
