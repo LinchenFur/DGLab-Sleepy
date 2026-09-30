@@ -10,12 +10,18 @@
     <link rel="icon" href="{{ env.page.favicon }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <style>
-        body {
-            background: url('{{ background_url }}') no-repeat center center fixed;
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: url('{{ env.page.background }}') no-repeat center center;
+            background-size: cover; 
+            will-change: transform; /* ai让我加上这两行 汗 */
+            transform: translateZ(0); /* Safari 强制开启 GPU 合成，防抖动 */
         }
     </style>
 
@@ -34,11 +40,6 @@
             <h3><i><b>{{ env.page.user }}'s</b></i> Status:<br><a id="status">{{ status['name'] }}</a></h3>
             <p id="additional-info">{{ status['desc'] | safe }}</p>
             <p id="device-status">[设备状态列表]</p>
-            
-            <div style="height: 10px;"></div>
-            <button onclick="handleButton1Click()" class="dg-btn"><img src="https://dungeon-lab.cn/img/logo-new.png"
-                    alt="DG-LAB" class="text-icon">雷元素攻击！</button>
-            <div style="height: 10px;"></div>
 
             {% if env.util.steam_enabled %}
             <!-- (steam) Steam 状态模块 (iframe) -->
@@ -63,9 +64,14 @@
             <!-- more_text END -->
             <p>你可以通过这个页面视奸 <b>{{ env.page.user }}</b>。<br>
                 <a href="{{ env.page.repo }}" target="_blank" style="color: rgb(0, 255, 0);">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:1em;">
+            <!-- 
+                    链接旁边的按钮
+					版权所有 勿删( https://www.iconfont.cn/user/detail?uid=10835226&nid=Cjf7KVUyjUd5
+					 -->
+                    <svg t="1751612617111" class="icon theme-aware-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2116" width="16" height="16">
                         <path
-                            d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
+                            d="M908.572444 107.064889h0.170667l4.152889 4.152889q65.706667 65.706667 65.706667 158.606222 0 92.899556-65.706667 158.606222l-145.180444 145.180445q-14.961778 15.473778-36.750223 15.644444-21.731556 0.227556-37.148444-15.189333-15.36-15.36-15.189333-37.148445 0.170667-21.788444 15.872-36.920889l144.952888-145.009777q35.271111-35.271111 35.271112-85.219556 0-49.891556-35.271112-85.162667-35.271111-35.271111-85.219555-35.271111-49.891556 0-85.219556 35.271111L523.946667 329.784889q-15.246222 15.246222-36.750223 15.189333-21.504 0-36.693333-15.189333-15.189333-15.246222-15.189333-36.750222 0-21.447111 15.189333-36.693334l145.180445-145.123555Q661.333333 45.511111 754.232889 45.511111q89.884444 0 154.339555 61.553778z m-326.769777 326.371555h0.568889l4.096 4.209778q15.189333 15.189333 15.189333 36.693334t-15.189333 36.693333l-75.377778 75.377778q-15.189333 15.189333-36.693334 15.246222-21.504 0-36.750222-15.246222-15.189333-15.189333-15.189333-36.693334t15.189333-36.693333l75.377778-75.377778q15.246222-15.246222 36.693333-15.246222 18.375111 0 32.085334 11.036444z m-288.711111 1.820445q-21.504 0-36.693334 15.189333l-145.180444 145.123556Q45.511111 661.276444 45.511111 754.232889q0 92.899556 65.706667 158.606222Q176.924444 978.488889 269.880889 978.488889q92.899556 0 158.606222-65.706667l145.123556-145.180444q15.246222-15.189333 15.246222-36.693334t-15.246222-36.693333q-15.189333-15.189333-36.693334-15.246222-21.447111 0-36.693333 15.189333L354.986667 839.395556q-35.271111 35.271111-85.162667 35.271111-49.891556 0-85.162667-35.271111-35.271111-35.271111-35.271111-85.162667-0.056889-49.891556 35.214222-85.219556l145.123556-145.180444q15.189333-15.189333 15.189333-36.693333t-15.189333-36.693334q-15.189333-15.189333-36.693333-15.189333z"
+                            p-id="2117"></path>
                     </svg>
                     <!-- learn_more START -->
                     {{ env.page.learn_more | safe }}
@@ -92,208 +98,6 @@
 
     <script>
         document.getElementById('status').classList.add("{{ status['color'] }}");
-        
-        // 初始化DG-Lab按钮状态
-        document.addEventListener('DOMContentLoaded', function() {
-            const button = document.querySelector('.dg-btn');
-            if (button) {
-                // 默认设置为连续点击模式
-                button.dataset.continuousClick = 'true';
-                button.dataset.processing = 'false';
-                
-                // 尝试获取配置
-                fetch('/dglab/config', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data && typeof data.continuous_click !== 'undefined') {
-                        button.dataset.continuousClick = data.continuous_click.toString();
-                    }
-                })
-                .catch(error => {
-                    console.error('无法获取配置:', error);
-                });
-            }
-        });
-        
-        // DG-Lab 雷元素攻击按钮处理函数
-        function handleButton1Click() {
-            // 显示加载状态
-            const button = document.querySelector('.dg-btn');
-            const originalText = button.innerHTML;
-            
-            // 检查是否已经有一个请求正在处理
-            if (button.dataset.processing === 'true') {
-                return; // 如果按钮正在处理中，不执行任何操作
-            }
-            
-            // 标记按钮为处理中
-            button.dataset.processing = 'true';
-            
-            // 在非连续点击模式下显示"发送中..."
-            // 在连续点击模式下不改变按钮文本
-            const isContinuousClick = button.dataset.continuousClick === 'true';
-            if (!isContinuousClick) {
-                button.innerHTML = '发送中...';
-                button.disabled = true;
-            }
-            
-            // 创建结果显示区域（如果不存在）
-            let resultDiv = document.getElementById('attack-result');
-            if (!resultDiv) {
-                resultDiv = document.createElement('div');
-                resultDiv.id = 'attack-result';
-                resultDiv.style.margin = '10px 0';
-                resultDiv.style.padding = '10px';
-                resultDiv.style.borderRadius = '8px';
-                resultDiv.style.fontWeight = 'bold';
-                button.parentNode.insertBefore(resultDiv, button.nextSibling);
-            }
-            
-            // 发送请求
-            fetch('/dglab/lightning', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // 显示结果
-                if (data.success) {
-                    // 成功消息
-                    resultDiv.style.backgroundColor = 'rgba(0, 128, 0, 0.2)';
-                    resultDiv.style.color = '#006400';
-                    resultDiv.innerHTML = `<div>${data.message}</div>`;
-                    if (data.details) {
-                        resultDiv.innerHTML += `<div style="font-size: 0.9em; margin-top: 5px;">${data.details}</div>`;
-                    }
-                    
-                    // 获取持续时间（毫秒）
-                    let displayDuration = 0;
-                    
-                    // 如果API返回了实际发送的数据，直接使用
-                    if (data.data_sent && data.data_sent.time) {
-                        displayDuration = data.data_sent.time;
-                    } else {
-                        // 否则从详情文本中提取
-                        const detailsText = data.details || '';
-                        const durationMatch = detailsText.match(/持续: (\d+)秒/);
-                        if (durationMatch && durationMatch[1]) {
-                            displayDuration = parseInt(durationMatch[1]) * 1000; // 转换为毫秒
-                        } else {
-                            displayDuration = 3000; // 默认3秒
-                        }
-                    }
-                    
-                    // 设置定时器，在持续时间结束后隐藏结果
-                    setTimeout(() => {
-                        // 使用淡出动画
-                        resultDiv.style.opacity = '0';
-                        setTimeout(() => {
-                            resultDiv.innerHTML = '';
-                            resultDiv.style.backgroundColor = 'transparent';
-                            resultDiv.style.opacity = '1';
-                        }, 500);
-                    }, displayDuration);
-                    
-                    // 更新按钮的连续点击状态
-                    button.dataset.continuousClick = data.continuous_click.toString();
-                    
-                    // 在连续点击模式下不显示"攻击成功"
-                    if (!data.continuous_click) {
-                        button.innerHTML = '⚡ 攻击成功！';
-                    } else {
-                        button.innerHTML = originalText;
-                        button.disabled = false; // 确保按钮在连续点击模式下不被禁用
-                    }
-                    
-                    // 处理连续点击控制
-                    if (!data.continuous_click && data.cooldown_time > 0) {
-                        // 如果不允许连续点击，显示冷却时间
-                        let cooldownSeconds = data.cooldown_time;
-                        button.disabled = true;
-                        button.style.opacity = '0.6';
-                        button.style.cursor = 'not-allowed';
-                        
-                        // 创建冷却计时器
-                        const cooldownInterval = setInterval(() => {
-                            cooldownSeconds--;
-                            button.innerHTML = `冷却中 (${cooldownSeconds}s)`;
-                            
-                            if (cooldownSeconds <= 0) {
-                                clearInterval(cooldownInterval);
-                                button.innerHTML = originalText;
-                                button.disabled = false;
-                                button.style.opacity = '1';
-                                button.style.cursor = 'pointer';
-                                button.dataset.processing = 'false'; // 重置处理状态
-                            }
-                        }, 1000);
-                        
-                        return; // 提前返回，不执行后面的恢复按钮状态代码
-                    }
-                } else {
-                    // 失败消息
-                    button.innerHTML = '❌ 攻击失败！';
-                    resultDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
-                    resultDiv.style.color = '#8B0000';
-                    resultDiv.innerHTML = data.message;
-                    console.error('Error:', data.message);
-                    
-                    // 3秒后隐藏失败消息
-                    setTimeout(() => {
-                        resultDiv.style.opacity = '0';
-                        setTimeout(() => {
-                            resultDiv.innerHTML = '';
-                            resultDiv.style.backgroundColor = 'transparent';
-                            resultDiv.style.opacity = '1';
-                        }, 500);
-                    }, 3000);
-                }
-                
-                // 恢复按钮状态（仅在连续点击模式或失败时执行）
-                if (data.continuous_click) {
-                    // 连续点击模式下立即恢复按钮状态
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                    button.dataset.processing = 'false'; // 重置处理状态
-                } else {
-                    // 非连续点击模式下延迟恢复
-                    setTimeout(() => {
-                        button.innerHTML = originalText;
-                        button.disabled = false;
-                        button.dataset.processing = 'false'; // 重置处理状态
-                    }, 2000);
-                }
-            })
-            .catch(error => {
-                button.innerHTML = '发生错误！';
-                resultDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
-                resultDiv.style.color = '#8B0000';
-                resultDiv.innerHTML = '系统错误，请稍后再试';
-                console.error('Error:', error);
-                
-                // 3秒后隐藏错误消息
-                setTimeout(() => {
-                    resultDiv.style.opacity = '0';
-                    setTimeout(() => {
-                        resultDiv.innerHTML = '';
-                        resultDiv.style.backgroundColor = 'transparent';
-                        resultDiv.style.opacity = '1';
-                    }, 500);
-                }, 3000);
-                
-                // 错误情况下立即恢复按钮状态
-                button.innerHTML = originalText;
-                button.disabled = false;
-                button.dataset.processing = 'false'; // 重置处理状态
-            });
-        }
     </script>
     <script src="{{ url_for('static', filename='get.js') }}" defer></script>
 

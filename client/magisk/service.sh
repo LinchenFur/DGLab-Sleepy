@@ -4,6 +4,18 @@
 SCRIPT_DIR=${0%/*}
 CONFIG_FILE="${SCRIPT_DIR}/config.cfg"
 . "$CONFIG_FILE"
+aapt="$SCRIPT_DIR/aapt"
+# 清理变量中的换行符
+SECRET=$(echo "$SECRET" | tr -d '\r\n')
+DEVICE_ID=$(echo "$DEVICE_ID" | tr -d '\r\n')
+URL=$(echo "$URL" | tr -d '\r\n')
+LOG_NAME=$(echo "$LOG_NAME" | tr -d '\r\n')
+DEVICE_NAME=$(echo "$DEVICE_NAME" | tr -d '\r\n')
+CACHE=$(echo "$CACHE" | tr -d '\r\n')
+MEDIA_SWITCH=$(echo "$MEDIA" | tr -d '\r\n')
+MEDIA_DEVICE_ID=$(echo "$MEDIA_DEVICE_ID" | tr -d '\r\n')
+MEDIA_DEVICE_SHOW_NAME=$(echo "$MEDIA_DEVICE_SHOW_NAME" | tr -d '\r\n')
+
 # ========== 日志系统 ==========
 LOG_PATH="${SCRIPT_DIR}/${LOG_NAME}"
 log() {
@@ -43,11 +55,28 @@ get_app_name() {
   fi
 
   # 请求应用商店获取名称
-  temp_file="${SCRIPT_DIR}/temp.html"
-  if curl --silent --show-error --fail -A "Mozilla/5.0" -o "$temp_file" "https://app.mi.com/details?id=$package_name"; then
-    app_name=$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$temp_file" | sed 's/-[^-]*$//')
-    rm -f "$temp_file"
+  # temp_file="${SCRIPT_DIR}/temp.html"
+  # if curl --silent --show-error --fail -A "Mozilla/5.0" -o "$temp_file" "https://app.mi.com/details?id=$package_name"; then
+  #   app_name=$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$temp_file" | sed 's/-[^-]*$//')
+  #   rm -f "$temp_file"
 
+  #   if [ -n "$app_name" ]; then
+  #     echo "$app_name"
+  #     echo "$package_name=$app_name" >> "$CACHE"
+  #     log "已写入缓存: $package_name=$app_name"
+  #     return
+  #   else
+  #     echo "$package_name"
+  #     log "网页解析失败，回退到包名: $package_name"
+  #   fi
+  # else
+  #   echo "$package_name"
+  #   log "网页请求失败，回退到包名: $package_name"
+  # fi
+
+  # 使用aapt解析应用名称
+  if [ -x "$aapt" ]; then
+    app_name=$("$aapt" dump badging $(cmd package path $package_name|sed -n 's/package://p;q') 2>/dev/null|awk -F"'" '/application-label-zh|application-label/{print $2;exit}')
     if [ -n "$app_name" ]; then
       echo "$app_name"
       echo "$package_name=$app_name" >> "$CACHE"
@@ -55,14 +84,21 @@ get_app_name() {
       return
     else
       echo "$package_name"
-      log "网页解析失败，回退到包名: $package_name"
+      log "aapt解析失败，回退到包名: $package_name"
     fi
   else
     echo "$package_name"
-    log "网页请求失败，回退到包名: $package_name"
+    log "aapt工具不可用，回退到包名: $package_name"
   fi
+  
 }
 
+# ========== 获取媒体状态 ==========
+get_media_info() {
+  if dumpsys media_session | grep -q "state=PLAYING"; then
+   dumpsys media_session | grep -m1 "description=" | sed -nr 's/.*description=([^,]+), ?([^,]+).*/\1\t\2/p'
+  fi
+}
 # ========== 发送状态请求 ==========
 send_status() {
   package_name="$1"
@@ -77,19 +113,43 @@ send_status() {
     res_up="$app_name[${battery_level}%]🔋"
   fi
 
+  media=$(get_media_info)
+  if [ -n "$media" ]; then
+    title=$(echo "$media" | cut -f1)
+    artist=$(echo "$media" | cut -f2)
+    media_status="♪$title - $artist"
+    log "$media_status"
+  else
+    media_status="未在播放"
+  fi
+
+
   log "$res_up"
   
-  http_code=$(curl -s --connect-timeout 35 --max-time 100 -w "%{http_code}" -o ./curl_body "$URL" \
+  # send_status调试用
+  # log "尝试请求URL: $URL"
+  # log "请求数据: {\"secret\": \"${SECRET}\", \"id\": \"${device_id}\", \"show_name\": \"${device_model}\", \"using\": ${using}, \"app_name\": \"$res_up\"}"
+
+  http_code=$(curl -v -s --connect-timeout 35 --max-time 100 -w "%{http_code}" -o ./curl_body "$URL" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"secret": "'"${SECRET}"'", "id": "'"${DEVICE_ID}"'", "show_name": "'"${device_model}"'", "using": '"${using}"', "app_name": "'"$res_up"'"}')
+  
+  if [ "$MEDIA_SWITCH" = "true" ]; then
+    curl -v -s --connect-timeout 35 --max-time 100 "$URL" \
     -X POST \
     -H "Content-Type: application/json" \
-    -d '{"secret": "'"${SECRET}"'", "id": 0, "show_name": "'"${device_model}"'", "using": '"${using}"', "app_name": "'"$res_up"'"}')
+    -d '{"secret": "'"${SECRET}"'", "id": "'"${MEDIA_DEVICE_ID}"'", "show_name": "'"${MEDIA_DEVICE_SHOW_NAME}"'", "using": '"${using}"', "app_name": "'"$media_status"'"}'
+  fi
+  
 
-  if [ "$http_code" -ne 200 ]; then
+  if [ "$http_code" != "200" ]; then
     log "警告：请求失败，状态码 $http_code，响应内容：$(cat ./curl_body)"
   fi
 }
 
 # ========== 主流程 ==========
+LAST_MEDIA=""
 LAST_PACKAGE=""
 > "$LOG_PATH"
 log "===== 服务启动 ====="
@@ -99,8 +159,10 @@ device_model=$(getprop ro.product.model)
 android_version=$(getprop ro.build.version.release)
 log "设备信息: ${device_model}, Android ${android_version}，等待一分钟"
 
-# 可以在这里覆盖设备显示名称
-device_model="OnePlus ACE3"
+# 覆盖设备显示名称
+if [ -n "${DEVICE_NAME}" ]; then
+  device_model="${DEVICE_NAME}"
+fi
 
 sleep 60
 log "开！"
@@ -126,8 +188,7 @@ while true; do
   else
     sleepy=0
     using="true"
-    CURRENT_FOCUS=$(dumpsys activity activities 2>/dev/null | grep -m 1 'ResumedActivity')
-    PACKAGE_NAME=$(echo "$CURRENT_FOCUS" | sed -E 's/.*u0 ([^/]+).*/\1/')
+    PACKAGE_NAME=$(am stack list | grep -m1 "visible=true" | sed -n 's/.*taskId=[0-9]*: \([^/]*\).*/\1/p')
   fi
 
   # 常规状态更新

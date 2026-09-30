@@ -2,20 +2,30 @@
 
 此目录存储客户端 (用于更新状态/设备状态)
 
+> [!IMPORTANT]
+> 每个客户端的标题可以 **点击跳转最新文件**, 不要使用固定 commit 的链接, 否则无法获取最新文件
+
+> *我是真心建议你过段时间再用, 还在重构呢*
+
 **Windows**:
   - [WinDevice](#WinDevice) *(已安装 Python 推荐)*
   - [Win_Simple](#Win_Simple) *(未安装 Python 推荐)*
+  - [Win Fast Settings](#win-fast-settings)
 
 **Android**:
   - [AutoxjsScript](#AutoxjsScript) *(无需 Root, 需安装额外软件)*
   - [MagiskService](#MagiskService) *(需 Root)*
+  - [SleepyXposed](#SleepyXposed) *(需 Root, 需 Xposed 框架)*
 
 **Linux**:
   - [LinuxScriptKDE](#LinuxScriptKDE) *(KDE Python 脚本)*
   - [LinuxScriptHyprland](#LinuxScriptHyprland) *(Hyprland 原生脚本)*
+  - [NiriPiri](#NiriPiri) *(Niri 插件客户端, 外部资源)*
 
-**MacOS**:
-  - [AppleShortcuts](#AppleShortcuts)
+**IOS/MacOS**:
+  - [AppleShortcuts](#AppleShortcuts) *(需要快捷指令拥有“获取前台 App”命令)*
+  - [SwiftUI版本](#SwiftUI版本) *(mac原生应用 支持macOS 13.0+)*
+  - [AppleScript版本](#AppleScript版本) *(支持macOS 10.9+)*
 
 **CLI** (命令行):
   - [HomeworkDevice](#HomeworkDevice)
@@ -32,72 +42,99 @@
 
 ## 快速跳转
 
-- [客户端文档](#客户端文档)
-  - [快速跳转](#快速跳转)
-- [Windows](#windows)
-  - [WinDevice](#windevice)
-    - [配置](#配置)
-    - [依赖安装](#依赖安装)
-    - [自启动](#自启动)
-      - [1. PM2](#1-pm2)
-      - [2. 自启脚本](#2-自启脚本)
-    - [无法获取网易云媒体信息](#无法获取网易云媒体信息)
-  - [Win\_Simple](#win_simple)
-    - [配置](#配置-1)
-    - [使用](#使用)
-- [Android](#android)
-  - [AutoxjsScript](#autoxjsscript)
-    - [软件下载](#软件下载)
-    - [配置](#配置-2)
-    - [使用](#使用-1)
-    - [安卓低版本运行](#安卓低版本运行)
-    - [启动时报错](#启动时报错)
-  - [MagiskService](#magiskservice)
-    - [配置](#配置-3)
-    - [使用](#使用-2)
-- [Linux](#linux)
-  - [LinuxScriptKDE](#linuxscriptkde)
-    - [配置](#配置-4)
-    - [使用](#使用-3)
-  - [LinuxScriptHyprland](#linuxscripthyprland)
-    - [配置](#配置-5)
-    - [使用](#使用-4)
-- [MacOS](#macos)
-  - [AppleShortcuts](#appleshortcuts)
-    - [FullVer](#fullver)
-    - [FastVer](#fastver)
-- [CLI](#cli)
-  - [HomeworkDevice](#homeworkdevice)
-    - [配置](#配置-6)
-    - [使用](#使用-5)
-  - [CMDConsole](#cmdconsole)
-    - [配置](#配置-7)
-    - [使用](#使用-6)
-  - [CmdConsoleMulti](#cmdconsolemulti)
-    - [配置](#配置-8)
-    - [使用](#使用-7)
-- [Others](#others)
-  - [MinecraftScript](#minecraftscript)
-    - [Minescript](#minescript)
-    - [配置](#配置-9)
-    - [使用](#使用-8)
-    - [自启](#自启)
-  - [BrowserScript](#browserscript)
-    - [配置](#配置-10)
-  - [Zhixuewang](#zhixuewang)
-    - [配置](#配置-11)
-    - [使用](#使用-9)
-  - [Other repos](#other-repos)
+1. [客户端文档](#客户端文档)
+   1. [快速跳转](#快速跳转)
+2. [Windows](#windows)
+   1. [WinDevice](#windevice)
+      1. [配置](#配置)
+      2. [依赖安装](#依赖安装)
+      3. [启动](#启动)
+      4. [自启动](#自启动)
+         1. [1. PM2](#1-pm2)
+         2. [2. 自启脚本](#2-自启脚本)
+      5. [无法获取网易云媒体信息](#无法获取网易云媒体信息)
+   2. [Win Fast Settings](#win-fast-settings)
+      1. [启动](#启动-1)
+   3. [Win\_Simple](#win_simple)
+      1. [配置](#配置-1)
+      2. [使用](#使用)
+3. [Android](#android)
+   1. [AutoxjsScript](#autoxjsscript)
+      1. [软件下载](#软件下载)
+      2. [配置](#配置-2)
+      3. [使用](#使用-1)
+      4. [清理后台不中断脚本方案](#清理后台不中断脚本方案)
+      5. [安卓低版本运行](#安卓低版本运行)
+      6. [启动时报错](#启动时报错)
+   2. [MagiskService](#magiskservice)
+      1. [配置](#配置-3)
+      2. [使用](#使用-2)
+      3. [Mod](#mod)
+   3. [SleepyXposed](#sleepyxposed)
+      1. [下载](#下载)
+      2. [配置](#配置-4)
+         1. [必填项](#必填项)
+         2. [可选项](#可选项)
+      3. [使用](#使用-3)
+4. [Linux](#linux)
+   1. [LinuxScriptKDE](#linuxscriptkde)
+      1. [配置](#配置-5)
+      2. [使用](#使用-4)
+   2. [LinuxScriptHyprland](#linuxscripthyprland)
+      1. [配置](#配置-6)
+      2. [使用](#使用-5)
+   3. [NiriPiri](#niripiri)
+      1. [配置](#配置-7)
+      2. [使用](#使用-6)
+5. [IOS/MacOS](#iosmacos)
+   1. [AppleShortcuts](#appleshortcuts)
+      1. [FullVer](#fullver)
+      2. [FastVer](#fastver)
+   2. [SwiftUI版本](#swiftui版本)
+      1. [Sleepy\_SU（点击下载安装包）](#sleepy_su点击下载安装包)
+         1. [说明](#说明)
+         2. [使用](#使用-7)
+   3. [AppleScript版本](#applescript版本)
+      1. [Sleepy\_AS（点击下载安装包）](#sleepy_as点击下载安装包)
+         1. [说明](#说明-1)
+         2. [使用](#使用-8)
+         3. [加入启动项开机启动](#加入启动项开机启动)
+6. [CLI](#cli)
+   1. [HomeworkDevice](#homeworkdevice)
+      1. [配置](#配置-8)
+      2. [使用](#使用-9)
+   2. [CMDConsole](#cmdconsole)
+      1. [配置](#配置-9)
+      2. [使用](#使用-10)
+   3. [CmdConsoleMulti](#cmdconsolemulti)
+      1. [配置](#配置-10)
+      2. [使用](#使用-11)
+7. [Others](#others)
+   1. [MinecraftScript](#minecraftscript)
+      1. [Minescript](#minescript)
+      2. [配置](#配置-11)
+      3. [使用](#使用-12)
+      4. [自启](#自启)
+   2. [BrowserScript](#browserscript)
+      1. [配置](#配置-12)
+   3. [Zhixuewang](#zhixuewang)
+      1. [配置](#配置-13)
+      2. [使用](#使用-13)
+   4. [Other repos](#other-repos)
+
+> [!TIP]
+> 欢迎提交 Issue / PR 贡献自己的脚本！
 
 # Windows
 
-## [WinDevice](./win_device.py)
+## [WinDevice](./win_device_ds.py)
 
-> by: [@wyf9](https://github.com/wyf9)
-> Co-authored-by: [@kmizmal](https://github.com/kmizmal)
-> Co-authored-by: [@pwnInt](https://github.com/pwnInt) - **^C / 鼠标空闲检测**
-> Co-authored-by: [@gongfuture](https://github.com/gongfuture) - **媒体信息获取**
-> Co-authored-by: [@LeiSureLyYrsc](https://github.com/LeiSureLyYrsc) - **异步支持**
+> by: [@wyf9](https://github.com/wyf9) <br/>
+> Co-authored-by: [@kmizmal](https://github.com/kmizmal) <br/>
+> Co-authored-by: [@pwnInt](https://github.com/pwnInt) - **^C / 鼠标空闲检测** <br/>
+> Co-authored-by: [@gongfuture](https://github.com/gongfuture) - **媒体信息获取** <br/>
+> Co-authored-by: [@LeiSureLyYrsc](https://github.com/LeiSureLyYrsc) - **异步支持** <br/>
+> Co-authored-by: [@GoingScience](https://github.com/GoingScience) - **托盘启动**
 
 在 Windows 上自动更新设备状态
 
@@ -111,7 +148,7 @@ https://github.com/sleepy-project/sleepy/blob/23c14c9a8a32a29a6f60b3d4347e07a5e3
 
 ```bat
 :: 必装依赖，其他为可选 (对应功能需要)
-pip install pywin32 requests
+pip install pywin32 httpx
 ```
 
 ```bat
@@ -130,6 +167,19 @@ pip install winrt.windows.media.control winrt.windows.foundation
 pip install psutil
 ```
 
+```bat
+:: 托盘功能依赖
+pip install pystray Pillow
+```
+
+### 启动
+
+```bat
+python win_device.py
+:: 显然，托盘功能仅添加到了ds版本中
+python win_device_ds.py
+```
+
 ### 自启动
 
 有两种方式:
@@ -145,12 +195,12 @@ pip install psutil
 
 #### 2. 自启脚本
 
-`win_device_autostart.vbs`
+`win_device_ds_autostart.vbs`
 
 自启脚本，使启动后不显示窗口 *(适用于不想用第三方软件托管进程的情况下)*
 
-1. 将 `win_device_autostart.vbs` 放入 `shell:startup` *(开始菜单 -> 启动)* 文件夹
-2. 将 `win_device.py` 放入 `%UserProfile%` *(用户主目录)* 文件夹
+1. 将 `win_device_ds_autostart.vbs` 放入 `shell:startup` *(开始菜单 -> 启动)* 文件夹
+2. 将 `win_device_ds.py` 放入 `%UserProfile%` *(用户主目录)* 文件夹
 
 > [!TIP]
 > `shell:startup` 和 `%UserProfile%` 两个文件夹可用运行窗口 (`Win+R`) 打开
@@ -161,19 +211,35 @@ pip install psutil
 
 **解决方法**: 安装 [BetterNCM](https://github.com/std-microblock/BetterNCM)，并安装 `InfLink` 插件，启用其中的 `SMTC` 功能即可正常获取
 
-## [Win_Simple](./Win_Simple/dist/Win_Simple.exe)
+## Win Fast Settings
+
+> by: [@Xiayue](https://github.com/tianyuzpr)
+
+这是一个基于 win_device.py 的快速调整 sleepy 设置的小脚本，基于 tkinter
+
+> [!WARNING]
+> 警告：距离本脚本上次维护已有大约一年时间，遂本人**不确定**能否用于最新版Sleepy-Project！
+> 本 client 基于 **[WinDevice](#windevice), 请确保您在使用前将 win_device.py 放在同一文件夹下, 并已经完成了在 win_device.py 中的配置!**
+
+额外的依赖: `requests`
+
+### 启动
+
+```bat
+python win_settings.py
+```
+
+## [Win_Simple](https://github.com/yangyan-ot/sleepy/releases/)
 
 > by: [@kmizmal](https://github.com/kmizmal) <br/>
+> Co-authored-by: [@yangyan-ot](hhttps://github.com/yangyan-ot) - 增加 WinUI 界面和托盘支持 <br/>
 > 源代码: [`./Win_Simple/script.py`](./Win_Simple/script.py)
 
 ### 配置
 
-配置文件 (首次打开自动在同级目录下创建): `config.ini`
-> `config.ini` 里面的注释写的很详细了，不再提供示例
+*配置文件 (首次打开自动在同级目录下创建): `config.ini`*
 
-### 使用
-
-下载后双击 `Win_Simple.exe` 初始化配置文件，然后在同级目录下的 `config.ini` 中填写配置，重新打开即可
+已有 WinUI 界面，直接在界面中设置即可
 
 > [!TIP]
 > 如何开机自启? <br/>
@@ -184,7 +250,9 @@ pip install psutil
 ## [AutoxjsScript](./autoxjs_device.js)
 
 > by: [@wyf9](https://github.com/wyf9) <br/>
-> Co-authored-by: [@NyaOH-Nahida](https://github.com/NyaOH-Nahida)
+> Co-authored-by: [@VanillaNahida](https://github.com/VanillaNahida) <br/>
+> Co-authored-by: [@makabaka-andy](https://github.com/makabaka-andy)<br/>
+> Co-authored-by: [@GoingScience](https://github.com/GoingScience)
 
 使用 [Autox.js](https://web.archive.org/web/20241224233444/https://github.com/kkevsekk1/AutoX) 编写的安卓自动更新状态脚本
 
@@ -197,6 +265,7 @@ pip install psutil
 ### 配置
 
 https://github.com/sleepy-project/sleepy/blob/e6b77af1e4333ad570983b5bf9ac397cb1d40d7b/client/autoxjs_device.js#L8-L15
+https://github.com/sleepy-project/sleepy/blob/e6b77af1e4333ad570983b5bf9ac397cb1d40d7b/client/autoxjs_device.js#L8-L15
 
 ### 使用
 
@@ -205,7 +274,12 @@ https://github.com/sleepy-project/sleepy/blob/e6b77af1e4333ad570983b5bf9ac397cb1
 ![image](https://files.catbox.moe/x93248.png)
 
 - 当手机息屏 (应用名返回为空) 时视为未在使用
+
 - 当脚本退出时也会更新状态为未在使用 *(不包括 Autox.js 直接停止运行)*
+
+### 清理后台不中断脚本方案
+
+- 导入[autoxjs_device_once_gemini.js](https://github.com/sleepy-project/sleepy/blob/main/client/autoxjs_device_once_gemini.js)或者[autoxjs_device_gemini.js](https://github.com/sleepy-project/sleepy/blob/main/client/autoxjs_device_gemini.js)（就我来说更推荐后者了）使用教程参考这两个文件的头部啦！
 
 ### 安卓低版本运行
 
@@ -295,6 +369,53 @@ https://github.com/sleepy-project/sleepy/blob/7bb1866e8448d921f6161f1200164a1991
 
 刷入 [magisk.zip](./magisk/magisk.zip) 并重启即可
 
+### Mod
+
+另有 [@XFJ-YYQF](https://github.com/XFJ-YYQF) 的修改版本可用，支持**媒体状态获取**
+
+见:
+
+- [./magisk-mod/config.cfg](./magisk-mod/config.cfg)
+- [说明 ~~(好像和原版一样)~~](./magisk-mod/README.md)
+
+## SleepyXposed
+
+> by [@RhenCloud](https://github.com/RhenCloud) <br/>
+> Source Code: [RhenCloud/SleepyXposed](https://github.com/RhenCloud/SleepyXposed)
+
+基于 Xposed 框架，对系统框架进行 hook 的客户端方案。
+
+### 下载
+
+请前往 [RhenCloud/SleepyXposed (Release)](https://github.com/RhenCloud/SleepyXposed/releases) 下载
+
+### 配置
+
+启动应用后，进行以下配置：
+
+#### 必填项
+
+| 字段           | 说明              | 示例                      |
+| -------------- | ----------------- | ------------------------- |
+| **服务器地址** | Sleepy 服务器地址 | `https://your-sleepy.com` |
+| **服务器密钥** | Sleepy 认证密钥   | `your-secret-key-here`    |
+| **设备 ID**    | 唯一标识此设备    | `android-phone-1`         |
+
+#### 可选项
+
+| 字段         | 说明                     | 默认值   |
+| ------------ | ------------------------ | -------- |
+| **显示名称** | 在 Sleepy 页面显示的名称 | 设备型号 |
+| **启用上报** | 是否启用数据上报         | 禁用     |
+
+### 使用
+
+1. 打开 Xposed/LSPosed 管理器
+2. 找到 **"SleepyXposed"** 模块
+3. **启用** 该模块
+4. 在作用域中勾选 **"系统框架"**
+5. 重启设备
+
 # Linux
 
 ## [LinuxScriptKDE](./linux_device_kde.py)
@@ -333,7 +454,50 @@ https://github.com/sleepy-project/sleepy/blob/7fc21380a259247533db76f3a0443fa550
 > 开机自启可自行在 `hyprland.conf` 中配置 <br/>
 > **注意: 需要给脚本加上可执行权限 *(`chmod +x`)*, 否则无法运行!**
 
-# MacOS
+## [NiriPiri](https://github.com/RhenCloud/piri)
+
+> by: [@RhenCloud](https://github.com/RhenCloud) <br/>
+> ***指向外部资源***
+
+**这是一个基于 [piri](https://github.com/Asthestarsfalll/piri) 的 Fork 版本**
+
+**感谢 [piri](https://github.com/Asthestarsfalll/piri) 原作者 [Asthestarsfalll](https://github.com/Asthestarsfalll) 做出的贡献**
+
+适用于 Linux Niri 桌面环境，通过 piri 的 Sleepy 插件在窗口焦点变化时自动上报应用状态。
+
+### 配置
+
+在 `~/.config/niri/piri.toml` 中启用插件并添加 sleepy 配置：
+
+```toml
+[piri.plugins]
+sleepy = true
+
+[sleepy]
+server_url = "https://sleepy.example.com"
+device_id = "my-linux"
+device_name = "Niri Desktop"
+token = ""      # 可选, Bearer Token 鉴权
+secret = ""     # 可选, 某些部署需要 body 内 secret
+prefer_app_id = false
+```
+
+> [!TIP]
+> `server_url` 填写服务端根地址即可，插件会自动请求 `/api/device/set`。
+
+### 使用
+
+1. 安装并启动 piri daemon
+2. 保持 piri 在 Niri 会话中运行
+3. 切换窗口焦点后即可自动更新 Sleepy 设备状态
+
+相关文档：
+
+- [original piri README](https://github.com/Asthestarsfalll/piri/blob/main/README.md)
+- [piri README](https://github.com/RhenCloud/piri/blob/main/README.md)
+- [Sleepy 插件说明](https://github.com/RhenCloud/piri/blob/main/docs/zh/plugins/sleepy.md)
+
+# IOS/MacOS
 
 ## [AppleShortcuts](https://github.com/Detritalw/Sleepy-Client-Shortcuts)
 
@@ -351,10 +515,118 @@ https://github.com/sleepy-project/sleepy/blob/7fc21380a259247533db76f3a0443fa550
 **建议设置自动化 → 打开App → 选择全部App → 设置为不确认，立即执行 → 选择快捷指令为Sleepy Client Shortcuts Fast，即可获得超级好的体验。**
 
 > [!WARNING]
+> **IOS 版本 >= 18 才可使用** *(获取前台 App 命令)*
 > 这里的链接可能不是最新，[建议到项目内查看](https://www.icloud.com/shortcuts/92fbddbf922343f5b076c828f788371f)
 
 > [!TIP]
 > 你可以将该快捷指令设置为操作按钮、控制中心按钮、锁定屏幕按钮、敲击 2 / 3 下背板指令来快捷使用
+
+## [SwiftUI版本](https://github.com/sleepy-project/sleepy/blob/main/client/mac_device_SleepySU_Installer.dmg)
+
+> 支持macOS 13.0+
+> 
+> by: [@wan0ge](https://github.com/wan0ge) & AI
+
+### [Sleepy_SU](https://github.com/sleepy-project/sleepy/blob/main/client/mac_device_SleepySU_Installer.dmg)（点击下载安装包）
+
+#### 说明
+
+使用 [Swift](https://zh.wikipedia.org/wiki/Swift%E8%AA%9E%E8%A8%80) 编写的 macOS 原生自动更新状态轻应用，与AppleScript版本差异是有图形化UI，并且支持锁屏、睡眠、关机状态检测上报未使用
+
+原生开发轻量级低占用，拥有图形化UI，支持锁屏、睡眠、关机状态的检测上报未使用，支持Apple Music、Spotify的音乐播放状态上报，支持忽略进程、窗口名，支持长时间窗口无变化上报未在使用
+
+#### 使用
+
+下载镜像安装包后双击打开，将应用图标拖拽到Applications（应用程序）即可完成安装，安装后启动就能够在菜单栏看到一只[小猫](https://www.iconfont.cn/search/index?searchType=icon&q=maomi_news&page=1&fromCollection=-1)的图标，点击能够看到各种选项
+
+<img width="420" height="420" alt="截屏2026-03-19 07 01 45" src="https://github.com/user-attachments/assets/169aca20-ca12-4317-9b01-ffe2d53905d4" />
+<img width="200" height="199" alt="截屏2026-03-19 00 07 17" src="https://github.com/user-attachments/assets/a14f1960-2c46-40a0-a0f1-8f68f4dea5da" />
+
+首次运行需要先去配置选项进行基础配置，注意更改都需要点击底部的保存才会应用
+
+> 配置文件储存在 ~/Library/Preferences/com.Sleepy-SU.plist
+
+<img width="420" height="420" alt="截屏2026-03-19 00 10 26" src="https://github.com/user-attachments/assets/e642bea3-d2fe-40a4-a3a4-46d5328a9a0e" />
+<img width="420" height="420" alt="截屏2026-03-19 00 10 31" src="https://github.com/user-attachments/assets/ee10dbab-1141-4ded-827a-82038c38b9d2" />
+
+然后在菜单栏点击开启状态更新，应用会先申请辅助权限
+
+<img width="632" height="393" alt="截屏2026-03-19 00 12 51" src="https://github.com/user-attachments/assets/768e2b4a-d6fd-4bc1-8fd5-4b2113c23320" />
+<img width="372" height="379" alt="截屏2026-03-18 04 25 26" src="https://github.com/user-attachments/assets/334ebcce-9af1-4d01-9d12-14c44a784653" />
+
+
+给予权限之后就能够看到正在运行了
+
+<img width="300" height="195" alt="截屏2026-03-19 00 14 20" src="https://github.com/user-attachments/assets/df05ee58-a7be-43aa-95f1-ffe887af7903" />
+
+遇到关机、睡眠、锁屏、强制退出都会进行上报未使用，只要在配置里面开启`开机自启动`与`启动应用时默认开启上报`就可以无感使用了
+
+> 如果有使用浏览器、Apple Music、Spotify应用会申请对应的自动化权限，用于获取更准确的窗口名与音乐播放信息（音乐播放信息暂时只支持Apple Music、Spotify，默认开启，开启后播放时会追加到窗口名后面显示）
+
+权限说明：
+
+`辅助权限`为主要权限，用来检测窗口名进程名（权限入口：系统设置→隐私与安全性→辅助功能）
+
+`自动化权限`用于更精准地获取浏览器标签页标题以及 Apple Music、Spotify 的播放信息，因为用到了应用自身的一些 API 所以需要这个权限访问（权限入口：系统设置→隐私与安全性→自动化）
+
+> [!WARNING]
+> *macOS 对应用权限的授予有问题，请尽量在运行后不要更改文件位置或移除权限*
+> 
+> 如果只上报进程名而不是窗口名说明辅助权限有问题，请在 系统设置→隐私与安全性→辅助功能 里将本应用删除再手动添加给予权限即可正常
+
+## [AppleScript版本](https://github.com/wan0ge/Extract-pure-links/blob/master/image/mac_device_SleepyAS_Installer.dmg)
+
+> 支持macOS 10.9+
+> 
+> by: [@wan0ge](https://github.com/wan0ge) & AI
+
+### [Sleepy_AS](https://github.com/wan0ge/Extract-pure-links/blob/master/image/mac_device_SleepyAS_Installer.dmg)（点击下载安装包）
+
+#### 说明
+
+使用 [AppleScript](https://zh.wikipedia.org/zh-cn/AppleScript) 编写的 macOS 自动更新状态脚本，如果macOS > 13.0 推荐使用上方的SwiftUI版本
+
+因为AS脚本检测锁屏和关机前上报未在使用实现困难，分为两个脚本，`Sleepy_AS`为上报状态主脚本，`Sleepy_AS_false`为停止并上报未使用脚本
+
+主脚本也支持长时间窗口无变化上报未在使用、忽略特定窗口/进程，如果觉得关机前启动副脚本不够便利也可以搭配快捷指令使用，创建一个快捷指令选择“打开App”和“关机”并选中Sleepy_AS_false就可以当一个伪一键关机脚本使用，或者其他方式搭配“打开App”使用。
+
+#### 使用
+
+下载镜像安装包后双击打开，将两个脚本图标拖拽到Applications（应用程序）即可完成安装
+
+<img width="520" height="520" alt="截屏2026-03-18 09 23 44" src="https://github.com/user-attachments/assets/368838e3-eccd-4e4d-85dd-bf8af8f887cd" />
+
+首次安装后需要先启动主脚本`Sleepy_AS`根据弹窗填写配置，填写完基础的API地址、密钥、设备ID、设备名称就能够看到运行弹窗
+
+> 配置文件储存在 ~/Library/Preferences/com.sleepy.as.app.plist
+
+<img width="420" height="420" alt="截屏2026-03-18 23 08 52" src="https://github.com/user-attachments/assets/1f68ac7b-73f2-4749-a77a-d08f561749b9" />
+<img width="420" height="420" alt="截屏2026-03-18 23 09 31" src="https://github.com/user-attachments/assets/3228e93d-b5e2-4893-a83f-ac202f8da8d0" />
+
+点击`直接运行`会申请辅助权限，进行授权后即可开始使用，脚本会在后台自动获取窗口名并上报（如果需要配置忽略窗口名请点击配置高级选项）
+
+<img width="372" height="505" alt="截屏2026-03-18 21 53 02" src="https://github.com/user-attachments/assets/00d34e88-36d6-436c-9fed-a50150e9e187" />
+<img width="372" height="379" alt="截屏2026-03-18 23 21 12" src="https://github.com/user-attachments/assets/e73bd5a0-70b9-4087-b4e0-2968d6a3fbea" />
+
+
+> 如果有使用浏览器、Apple Music、Spotify程序会申请对应的自动化权限，用于获取更准确的窗口名与音乐播放信息（音乐播放信息暂时只支持Apple Music、Spotify，默认开启，开启后播放时会追加到窗口名后面显示）
+
+关机或锁屏前启动`Sleepy_AS_false`就可以停止主脚本并上报未在使用（同样需要辅助等等权限），关闭脚本不需要再次填写配置会自动读取主脚本的配置
+
+权限说明：
+
+`辅助权限`为主要权限，用来检测窗口名进程名（权限入口：系统设置→隐私与安全性→辅助功能）
+
+`自动化权限`用于更精准的获取浏览器标签页标题以及AppleMusic、Spotify的播放信息获取，因为用到了应用自身的一些API所以需要这个权限访问（权限入口：系统设置→隐私与安全性→自动化）
+
+> [!WARNING]
+> *mac os对应用权限给予有问题，请尽量保存运行后不要更改文件位置以及移除权限*
+> 
+> 如果只上报进程名而不是窗口名说明辅助权限有问题，请在 系统设置→隐私与安全性→辅助功能 里将本脚本删除再手动添加给予权限即可正常
+
+#### 加入启动项开机启动
+
+在 系统设置→通用→登录项→登录时打开 中将`Sleepy_AS`主脚本加入即可
 
 # CLI
 
@@ -384,15 +656,14 @@ https://github.com/sleepy-project/sleepy/blob/2df5d622844816867506adc6d211dc5138
 
 > 点击链接跳转 api 文档
 
-- [`query()`](../doc/api.md#query): 查看当前状态 *(未格式化输出)*
-- [`status_list()`](../doc/api.md#status-list): 查看可用状态列表 *(未格式化输出)*
-- [`metrics()`](../doc/api.md#metrics): 查看统计数据 *(未格式化输出)*
+- [`query()`](../doc/api.md#apistatusquery): 查看当前状态 *(未格式化输出)*
+- [`status_list()`](../doc/api.md#apistatuslist): 查看可用状态列表 *(未格式化输出)*
+- [`metrics()`](../doc/api.md#apimetrics): 查看统计数据 *(未格式化输出)*
 - [`status(stat: int)`](../doc/api.md#status-set): 设置状态
-- [`device_set(id: str, show_name: str, msg: str, using: bool = True)`](../doc/api.md#device-set): 设备状态设置
-- [`device_remove(id: str)`](../doc/api.md#device-remove): 移除设备状态
-- [`device_clear()`](../doc/api.md#device-clear): 清除设备状态
-- [`private_mode(private: bool)`](../doc/api.md#device-private-mode): 开关隐私模式
-- [`save_data()`](../doc/api.md#storage-save-data): 保存数据到 `data.json`
+- [`device_set(id: str, show_name: str, msg: str, using: bool = True)`](../doc/api.md#apideviceset): 设备状态设置
+- [`device_remove(id: str)`](../doc/api.md#apideviceremove): 移除设备状态
+- [`device_clear()`](../doc/api.md#apideviceclear): 清除设备状态
+- [`private_mode(private: bool)`](../doc/api.md#apideviceprivate): 开关隐私模式
 
 </details>
 
@@ -478,7 +749,7 @@ Links: [MCMod.cn](https://www.mcmod.cn/class/7594.html) / [Modrinth](https://mod
 python="C:\Program Files\Python312\python.exe"
 ```
 
-2. 将 [`mc_script.py`](./mc_script.py) 复制到此目录, 并改名为 `sleepy.py` (也可为其他名字)
+2. 将 `mc_script.py` 复制到此目录, 并改名为 `sleepy.py` (也可为其他名字)
 
 ### 配置
 
@@ -540,14 +811,14 @@ sleepy_page_zhixue = true
 
 ### 使用
 
-需要将本脚本放在服务器的 `server.py` 同级目录运行，或编辑 L195-L197:
+需要将本脚本放在服务器的 `main.py` 同级目录运行，或编辑 L195-L197:
 
 https://github.com/sleepy-project/sleepy/blob/73a5e3507c1ca0454bc39c685541d53d228df41f/client/zhixue.py#L195-L197
 
 ## Other repos
 
 > [!IMPORTANT]
-> 在功能 / API 实现上有不同，需要进行修改以与本分支适配 (见 [API #device-set](../doc/api.md#device-set))
+> 在功能 / API 实现上有不同，需要进行修改以与本分支适配 (见 [API #device-set](../doc/api.md#apideviceset))
 
 - [1812z/sleepy] Android [Macrodroid](https://www.bing.com/search?q=Macrodroid%20download): [(main) `前台应用状态.macro`](https://github.com/1812z/sleepy/blob/main/%E5%89%8D%E5%8F%B0%E5%BA%94%E7%94%A8%E7%8A%B6%E6%80%81.macro)
 - [HBWuChang/sleepy] Android Magisk: [(main) `_example/magisk/service.sh`](https://github.com/HBWuChang/sleepy/blob/main/_example/magisk/service.sh) *(详见脚本目录)*

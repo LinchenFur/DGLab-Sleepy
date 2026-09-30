@@ -45,14 +45,13 @@ ENCODING: str = 'gb18030'
 # 当窗口标题为其中任意一项时将不更新
 SKIPPED_NAMES: list = [
     '',  # 空字符串
-    '系统托盘溢出窗口。', '新通知', '任务切换', '快速设置', '通知中心', '操作中心', '日期和时间信息', '网络连接', '电池信息', '搜索', '任务视图', '任务切换', 'Program Manager',  # 桌面组件
+    '系统托盘溢出窗口。', '新通知', '任务切换', '快速设置', '通知中心', '操作中心', '日期和时间信息', '网络连接', '电池信息', '搜索', '任务视图', '任务切换', 'Program Manager', '贴靠助手',  # 桌面组件
     'Flow.Launcher', 'Snipper - Snipaste', 'Paster - Snipaste'  # 其他程序
 ]
 # 当窗口标题为其中任意一项时视为未在使用
 NOT_USING_NAMES: list = [
     '启动', '「开始」菜单',  # 开始菜单
-    '我们喜欢这张图片，因此我们将它与你共享。', '就像你看到的图像一样？选择以下选项', '喜欢这张图片吗?'  # 锁屏界面
-    '我们喜欢这张图片，因此我们将它与你共享。', '就像你看到的图像一样？选择以下选项', '喜欢这张图片吗?'  # 锁屏界面
+    '我们喜欢这张图片，因此我们将它与你共享。', '就像你看到的图像一样？选择以下选项', '喜欢这张图片吗?', 'Windows 默认锁屏界面'  # 锁屏界面
 ]
 # 是否反转窗口标题，以此让应用名显示在最前 (以 ` - ` 分隔)
 REVERSE_APP_NAME: bool = False
@@ -83,21 +82,16 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 _print_ = print
 
 
-def print(msg: str, print_only: bool = False, **kwargs):
+def print(msg: str, **kwargs):
     '''
     修改后的 `print()` 函数，解决不刷新日志的问题
-    原: `_print_()`
+    - 原: `_print_()`
     '''
     msg = str(msg).replace('\u200b', '')
     try:
-        if print_only:
-            _print_(msg, flush=True, **kwargs)
-        else:
-            _print_(
-                f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {msg}', flush=True, **kwargs)
+        _print_(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {msg}', flush=True, **kwargs)
     except Exception as e:
-        _print_(
-            f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] Log Error: {e}', flush=True)
+        _print_(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] Log Error: {e}', flush=True)
 
 
 def debug(msg: str, **kwargs):
@@ -202,11 +196,11 @@ def get_battery_info():
 # ----- Part: Send status
 
 
-Url = f'{SERVER}/device/set'
+Url = f'{SERVER}/api/device/set'
 last_window = ''
 
 
-async def send_status(using: bool = True, app_name: str = '', id: str = DEVICE_ID, show_name: str = DEVICE_SHOW_NAME, timeout: float = 7.5, **kwargs):
+async def send_status(using: bool = True, status: str = '', id: str = DEVICE_ID, show_name: str = DEVICE_SHOW_NAME, timeout: float = 7.5, **kwargs):
     '''
     httpx.AsyncClient.post 发送设备状态信息
     设置了 headers 和 proxies
@@ -216,7 +210,7 @@ async def send_status(using: bool = True, app_name: str = '', id: str = DEVICE_I
         'id': id,
         'show_name': show_name,
         'using': using,
-        'app_name': app_name
+        'status': status
     }
 
     if PROXY:
@@ -257,7 +251,7 @@ def on_shutdown(hwnd, msg, wparam, lparam):
             asyncio.set_event_loop(loop)
             resp = loop.run_until_complete(send_status(
                 using=False,
-                app_name="要关机了喵",
+                status="要关机了喵",
                 id=DEVICE_ID,
                 show_name=DEVICE_SHOW_NAME
             ))
@@ -422,7 +416,7 @@ async def do_update():
 
             standalone_media_info = " - ".join(parts) if parts else "♪播放中"
 
-            debug(f"独立媒体信息: {standalone_media_info}")
+            print(f"独立媒体信息: {standalone_media_info}")
 
     # 处理媒体信息 (prefix 模式)
     if MEDIA_INFO_ENABLED and prefix_media_info and MEDIA_INFO_MODE == 'prefix':
@@ -472,11 +466,12 @@ async def do_update():
                 window = last_window
 
         # 发送状态更新
-        print(f'Sending update: using = {using}, app_name = "{window}" (idle = {mouse_idle})')
+        print(
+            f'Sending update: using = {using}, status = "{window}", idle = {mouse_idle}')
         try:
             resp = await send_status(
                 using=using,
-                app_name=window,
+                status=window,
                 id=DEVICE_ID,
                 show_name=DEVICE_SHOW_NAME
             )
@@ -502,13 +497,13 @@ async def do_update():
             media_changed = (current_media_playing != last_media_playing) or (current_media_playing and current_media_content != last_media_content)
 
             if media_changed:
-                debug(f'Media changed: status: {last_media_playing} -> {current_media_playing}, content: {last_media_content != current_media_content} - `{standalone_media_info}`')
+                print(f'Media changed: status: {last_media_playing} -> {current_media_playing}, content: {last_media_content != current_media_content} - `{standalone_media_info}`')
 
                 if current_media_playing:
                     # 从不播放变为播放或歌曲内容变化
                     media_resp = await send_status(
                         using=True,
-                        app_name=standalone_media_info,
+                        status=standalone_media_info,
                         id=MEDIA_DEVICE_ID,
                         show_name=MEDIA_DEVICE_SHOW_NAME
                     )
@@ -516,7 +511,7 @@ async def do_update():
                     # 从播放变为不播放
                     media_resp = await send_status(
                         using=False,
-                        app_name='没有媒体播放',
+                        status='没有媒体播放',
                         id=MEDIA_DEVICE_ID,
                         show_name=MEDIA_DEVICE_SHOW_NAME
                     )
@@ -537,13 +532,13 @@ async def main():
         while True:
             await do_update()
             await asyncio.sleep(CHECK_INTERVAL)
-    except (KeyboardInterrupt, SystemExit) as e:
+    except (KeyboardInterrupt, SystemExit, asyncio.CancelledError) as e:
         # 如果中断或被 taskkill 则发送未在使用
-        debug(f'Interrupt: {e}')
+        debug(f'Interrupted / Cancelled: {e}')
         try:
             resp = await send_status(
                 using=False,
-                app_name='未在使用',
+                status='未在使用',
                 id=DEVICE_ID,
                 show_name=DEVICE_SHOW_NAME
             )
@@ -553,7 +548,7 @@ async def main():
             if MEDIA_INFO_ENABLED and MEDIA_INFO_MODE == 'standalone':
                 media_resp = await send_status(
                     using=False,
-                    app_name='未在使用',
+                    status='未在使用',
                     id=MEDIA_DEVICE_ID,
                     show_name=MEDIA_DEVICE_SHOW_NAME
                 )
@@ -562,7 +557,9 @@ async def main():
             if resp.status_code != 200:
                 print(f'Error! Response: {resp.status_code} - {resp.json()}')
         except Exception as e:
-            print(f'Exception: {e}')
+            print(f'Error sending not using: {e}')
+        finally:
+            print(f'Bye.')
 
 
 if __name__ == '__main__':

@@ -140,19 +140,19 @@ def status(stat: int):
 # - device
 
 
-def device_set(id: str, show_name: str, msg: str, using: bool = True):
+def device_set(id: str, show_name: str, status: str, using: bool = True):
     '''
-    /device/set using POST
+    /api/device/set using POST
     - set device status
     '''
-    resp = post(f'{SERVER}/device/set', {
+    resp = post(f'{SERVER}/api/device/set', {
         'secret': SECRET,
         'id': id,
         'show_name': show_name,
         'using': using,
-        'app_name': msg
+        'status': status
     })
-    print(f'[/device/set] Response: {resp.status_code} - {resp.json()}')
+    print(f'[/api/device/set] Response: {resp.status_code} - {resp.json()}')
 
 
 def device_remove(id: str):
@@ -175,22 +175,11 @@ def device_clear():
 
 def private_mode(private: bool):
     '''
-    /device/private_mode using GET
+    /device/private using GET
     - open / close private mode *(don't show device status)*
     '''
-    resp = get(f'{SERVER}/device/private_mode?secret={SECRET}&private={private}')
-    print(f'[/device/clear] Response: {resp.status_code} - {resp.json()}')
-
-# - storage
-
-
-def save_data():
-    '''
-    /save_data using GET
-    - save memory data (status, device, metrics) to server `data.json`
-    '''
-    resp = get(f'{SERVER}/save_data?secret={SECRET}')
-    print(f'[/save_data] Response: {resp.status_code} - {resp.json()}')
+    resp = get(f'{SERVER}/device/private?secret={SECRET}&private={private}')
+    print(f'[/device/private] Response: {resp.status_code} - {resp.json()}')
 
 # - custom
 
@@ -207,7 +196,7 @@ def left(
         device_set(
             id=id,
             show_name=show_name,
-            msg=f'{num}'
+            status=f'{num}'
         )
     else:
         device_remove(id=id)
@@ -225,7 +214,7 @@ def writing(
         device_set(
             id=id,
             show_name=show_name,
-            msg=name
+            status=name
         )
     else:
         device_remove(id=id)
